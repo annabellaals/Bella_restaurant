@@ -1,0 +1,67 @@
+{% load static %}
+
+<form action="" method="post">
+    {% csrf_token %}
+    <div>
+        <input type="text" name="name" id="name" class="form-control" placeholder="Your Name"
+               value="{% if user %}{{ user.first_name }} {% else %} '' {% endif %}"/>
+    </div>
+    <div>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Your Email"
+               value="{{ user.email }}" disabled/>
+    </div>
+    <div>
+        <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone Number"
+               value="{{ user.phone }}"/>
+    </div>
+
+    <div>
+        {#                <select class="form-control nice-select wide">#}
+        {#                  <option value="" disabled selected>#}
+        {#                    How many persons?#}
+        {#                  </option>#}
+        {#                  <option value="">#}
+        {#                    2#}
+        {#                  </option>#}
+        {#                  <option value="">#}
+        {#                    3#}
+        {#                  </option>#}
+        {#                  <option value="">#}
+        {#                    4#}
+        {#                  </option>#}
+        {#                  <option value="">#}
+        {#                    5#}
+        {#                  </option>#}
+        {#                </select>#}
+    </div>
+
+    <div>
+        <input type="number" name="people" id="people" class="form-control" placeholder="How many persons?"/>
+    </div>
+
+    <div>
+        <input type="text" name="reservation_datetime" id="reservation_datetime" class="form-control"
+               placeholder="Reservation Date and time">
+    </div>
+
+    <script>
+        var dtt = document.getElementById('reservation_datetime')
+        dtt.onfocus = function (event) {
+            this.type = 'datetime-local';
+            this.focus();
+        }
+    </script>
+
+    <textarea
+            class="form-control"
+            name="message"
+            id="message"
+            rows="3"
+            placeholder="Message"
+    ></textarea>
+    <div class="btn_box">
+        <button type="submit">
+            Check Availability
+        </button>
+    </div>
+</form>

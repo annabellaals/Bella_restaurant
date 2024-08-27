@@ -1,0 +1,73 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <body class="sub_page">
+
+    <div class="hero_area">
+        <div class="bg-box">
+            <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+        </div>
+        {% include 'home/partials/_header.html' %}
+    </div>
+
+
+    <section class="about_section layout_padding">
+        <div class="container  ">
+
+            <div class="row">
+                <div class="col-md-6 ">
+                    <div class="img-box">
+                        <img src="{% static 'images/about-img.png' %}" alt="">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="detail-box">
+                        <div class="heading_container">
+                            <h2>
+                                You Are at Bella's Restaurant
+                            </h2>
+                        </div>
+                        <p>
+                            Where every meal is a flavor-packed experience. At Bella's Restaurant, we’re passionate
+                            about delivering the best in fast food with a commitment to quality, taste, and freshness.
+                        </p>
+                        <p>
+
+                        <h3>Our Story</h3>
+                        Founded on the love for great food and a welcoming atmosphere, our restaurant is dedicated to
+                        serving up
+                        classic fast food favorites and innovative new dishes. From our sizzling burgers and crispy
+                        fries to our
+                        mouthwatering chicken and refreshing beverages, every item on our menu is crafted with care and
+                        attention
+                        to detail.
+
+                        <p>
+                        <h3>Why Choose Us?</h3>
+
+                        Quality Ingredients: We use only the finest ingredients to ensure every bite is delicious and
+                        satisfying.
+                        Freshly Made: Our food is prepared fresh daily, just the way you like it.
+                        Friendly Service: Our team is here to make your dining experience enjoyable, whether you’re
+                        eating in or taking out.
+
+                        </p>
+                        <p>
+                        <h3>Join Us Today!</h3>
+                        Whether you’re grabbing a quick bite or enjoying a meal with family and friends, [Your
+                        Restaurant Name] is the perfect spot to indulge in your fast food favorites. Come on in or order
+                        online for a taste of the best fast food in town!
+                        {#            <a href="">#}
+                        {#              Read More#}
+                        {#            </a>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- end about section -->
+    {% include 'home/partials/_footer.html' %}
+{% endblock %}
