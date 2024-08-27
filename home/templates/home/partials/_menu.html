@@ -1,0 +1,61 @@
+{% load static %}
+
+<div class="container">
+    <div class="heading_container heading_center">
+        <h2>
+            Our Menu
+        </h2>
+    </div>
+
+    <ul class="filters_menu">
+        <li class="active" data-filter="*">All</li>
+        {% for food_type in food_types %}
+            <li data-filter=".{{ food_type.name }}">{{ food_type.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="filters-content">
+        <div class="row grid">
+            {% for food in foods %}
+                <div class="col-sm-6 col-lg-4 all {{ food.food_type.name }}">
+                    <div class="box">
+                        <div>
+                            <div class="img-box">
+                                <img src="{{ food.image_url }}" alt="">
+                            </div>
+                            <div class="detail-box">
+                                <h5>
+                                    {{ food.name }}
+                                </h5>
+                                <p>
+                                    {{ food.description }}
+                                </p>
+                                <div class="options">
+                                    <h6>
+                                        ${{ food.price }}.00
+                                    </h6>
+                                    <a id="cart_add_button-{{ food.id }}" onclick="appendObjectToLocalStorage({{ food.to_dict }})"
+                                       style="cursor: pointer"><i class="fa-solid fa-cart-plus"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+
+            <script>
+                function appendObjectToLocalStorage(obj) {
+                    let array = JSON.parse(localStorage.getItem("bella_cart")) || [];
+                    const index = array.findIndex(item => item.id === obj.id);
+                    if (index === -1) {
+                        array.push(obj);
+                    }
+                    localStorage.setItem("bella_cart", JSON.stringify(array));
+                    document.getElementById(`cart_add_button-${obj.id}`).innerHTML = `<i class="fa-solid fa-check"></i>`
+                }
+            </script>
+        </div>
+    </div>
+</div>

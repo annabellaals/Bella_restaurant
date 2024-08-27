@@ -1,0 +1,24 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+<body class="sub_page">
+
+  <div class="hero_area">
+    <div class="bg-box">
+      <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+    </div>
+   {% include 'home/partials/_header.html' %}
+  </div>
+
+  <!-- food section -->
+
+  <section class="food_section layout_padding">
+        {% include 'home/partials/_menu.html' %}
+  </section>
+
+  <!-- end food section -->
+    {% include 'home/partials/_footer.html' %}
+
+      <script href="{% static 'js/custom.js'%}"></script>
+{% endblock %}

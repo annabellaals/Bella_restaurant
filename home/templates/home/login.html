@@ -1,0 +1,66 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <body class="sub_page">
+    <div class="hero_area">
+        <div class="bg-box">
+            <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+        </div>
+        {% include 'home/partials/_header.html' %}
+    </div>
+
+    <!-- book section -->
+    <section class="book_section layout_padding">
+        <div class="container container-special">
+            <div class="heading_container">
+                <h2>
+                    Welcome back to Bella's Restaurant
+                </h2>
+            </div>
+            <div class="row text-center">
+                <div class="col-md-12">
+                    <div class="form_container">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div>
+                                <input type="email" name="email" id="email" class="form-control" placeholder="Email" required/>
+                            </div>
+                            <div>
+                                <input type="password" name="password" id="password" class="form-control"
+                                       placeholder="Password" required/>
+                            </div>
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <li class="{{ message.tags }}">{{ message }}</li>
+                                {% endfor %}
+                    {% endif %}
+                            <div class="btn_box">
+                                <button type="submit">
+                                    Login
+                                </button>
+                            </div>
+                        </form>
+
+
+
+
+                        Or register <a href="{% url 'register' %}">here</a>
+
+                    </div>
+                </div>
+
+                {#        <div class="col-md-6">#}
+                {#          <div class="map_container ">#}
+                {#            <div id="googleMap"></div>#}
+                {#          </div>#}
+                {#        </div>#}
+            </div>
+
+        </div>
+    </section>
+    <!-- end book section -->
+
+    {% include 'home/partials/_footer.html' %}
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+    <body class="sub_page">
+    <div class="hero_area">
+        <div class="bg-box">
+            <img src="{% static 'images/hero-bg.jpg' %}" alt="">
+        </div>
+        {% include 'home/manager/_header.html' %}
+    </div>
+    <section class="book_section layout_padding">
+        <div class="container">
+            <div class="row text-center">
+                <h5 class="mb-3">Orders:</h5>
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Oder ID</th>
+                            <th scope="col">Items</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">comments</th>
+                            <th scope="col">actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for order in orders %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ order.id }}</td>
+                                <td>
+                                    {% for item in order.orderfood_set.all %}
+                                        <div>- {{ item.food.name }} - ${{ item.food.price }}.00</div>
+                                    {% endfor %}
+                                </td>
+                                <td> ${{ order.order_amount }}.00</td>
+                                <td>
+                                    <select id="order-select-{{ order.id }}" class="form-control nice-select wide">
+                                        {% for options in oder_options %}
+                                            <option value="{{ options }}"
+                                                    {% if options == order.status %}selected{% endif %}>
+                                                {{ options }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input id="order-comments-{{ order.id }}" class="form-control"
+                                           value="{{ order.comments }}"/></td>
+                                <td>
+                                    <button id="manager-order-save-btn-{{ order.id }}" onclick="saveOrder(`{{ order.id }}`)">save</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row text-center mt-5">
+                <h5 class="mb-3">Table Bookings:</h5>
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Booking ID</th>
+                            <th scope="col">Book by</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col"># of peoples</th>
+                            <th scope="col">Booking date time</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for booking in bookings %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ booking.id }}</td>
+                                <td>{{ booking.booking_name }} </td>
+                                <td>{{ booking.booking_phone }}</td>
+                                <td>{{ booking.people }}</td>
+                                <td>{{ booking.booking_date }}</td>
+                                <td>{{ booking.message }}</td>
+                                <td>
+                                    <select id="booking-select-{{ booking.id }}" class="form-control nice-select wide">
+                                        {% for options in booking_options %}
+                                            <option value="{{ options }}"
+                                                    {% if options == booking.status %}selected{% endif %}>
+                                                {{ options }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <button id="manager-booking-save-btn-{{ booking.id }}" onclick="saveBooking(`{{ booking.id }}`)">save</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function saveOrder(id) {
+            var selectElement = document.getElementById(`order-select-${id}`);
+            var inputElement = document.getElementById(`order-comments-${id}`);
+            var selectedValue = selectElement.value;
+            var commentValue = inputElement.value;
+
+            console.log(commentValue)
+            $.ajax({
+                headers: {"X-CSRFToken": getCookie("csrftoken")},
+                type: "POST",
+                url: '{% url 'manager-save-order' %}',
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    order_id: id,
+                    selected_value: selectedValue,
+                    comment_value: commentValue
+                }),
+                success: function (data) {
+                    document.getElementById(`manager-order-save-btn-${id}`).innerText = "Saved";
+                },
+                failure: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+
+        function saveBooking(id) {
+            var selectElement = document.getElementById(`booking-select-${id}`);
+            var selectedValue = selectElement.value;
+            $.ajax({
+                headers: {"X-CSRFToken": getCookie("csrftoken")},
+                type: "POST",
+                url: '{% url 'manager-save-booking' %}',
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    booking_id: id,
+                    selected_value: selectedValue,
+                }),
+                success: function (data) {
+                    document.getElementById(`manager-booking-save-btn-${id}`).innerText = "Saved";
+                },
+                failure: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+    </script>
+
+    {% include 'home/partials/_footer.html' %}
+{% endblock %}
