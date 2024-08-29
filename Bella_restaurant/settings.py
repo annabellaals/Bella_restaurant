@@ -96,11 +96,10 @@ WSGI_APPLICATION = 'Bella_restaurant.wsgi.application'
 # }
 
 
-PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_DIR, 'bella_restaurant.db'),
+        'NAME': os.path.join(BASE_DIR, 'bella_restaurant.db'),
     }
 }
 
