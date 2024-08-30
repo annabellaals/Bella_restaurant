@@ -4,6 +4,25 @@ import django.utils.timezone
 import uuid
 from django.db import migrations, models
 
+def apply_migration(apps, schema_editor):
+    Group = apps.get_model('auth', 'Group')
+    Group.objects.bulk_create([
+        Group(name=u'admin'),
+        Group(name=u'customer'),
+        Group(name=u'manager'),
+    ])
+
+
+def revert_migration(apps, schema_editor):
+    Group = apps.get_model('auth', 'Group')
+    Group.objects.filter(
+        name__in=[
+            u'admin',
+            u'customer',
+            u'manager',
+        ]
+    ).delete()
+
 
 class Migration(migrations.Migration):
 
@@ -14,6 +33,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(apply_migration, revert_migration),
         migrations.CreateModel(
             name='User',
             fields=[

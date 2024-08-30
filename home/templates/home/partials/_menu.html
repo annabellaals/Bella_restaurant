@@ -43,19 +43,6 @@
                 </div>
 
             {% endfor %}
-
-
-            <script>
-                function appendObjectToLocalStorage(obj) {
-                    let array = JSON.parse(localStorage.getItem("bella_cart")) || [];
-                    const index = array.findIndex(item => item.id === obj.id);
-                    if (index === -1) {
-                        array.push(obj);
-                    }
-                    localStorage.setItem("bella_cart", JSON.stringify(array));
-                    document.getElementById(`cart_add_button-${obj.id}`).innerHTML = `<i class="fa-solid fa-check"></i>`
-                }
-            </script>
         </div>
     </div>
 </div>
