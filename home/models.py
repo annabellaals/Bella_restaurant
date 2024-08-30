@@ -24,6 +24,11 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+    # def save(self, *args, **kwargs):
+    #     # if not kwargs.get('is_password_encoded', False):
+    #     self.set_password(self.password)
+    #     super().save(*args, **kwargs)
+
 
 class FoodType(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -100,9 +105,20 @@ class OrderFood(models.Model):
         return str(self.id)
 
 
+class ReservationTables(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    table_id =models.CharField(max_length=10, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return str(self.table_id)
+
+
 class TableBooking(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reservation_table = models.ForeignKey(ReservationTables, on_delete=models.CASCADE)
     booking_name = models.CharField(max_length=200)
     booking_phone = models.CharField(max_length=50)
     booking_date = models.DateTimeField()

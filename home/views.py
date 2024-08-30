@@ -1,15 +1,16 @@
 import json
+from datetime import datetime
 
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.models import Group
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from home.models import User, Food, FoodType, Order, OrderFood, TableBooking
+from home.models import User, Food, FoodType, Order, OrderFood, TableBooking, ReservationTables
+from home.utils import get_available_tables
 
 
 def home(request):
-    if request.user.groups.filter(name="Manager").exists():
+    if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
     context = {'is_authenticated': request.user.is_authenticated,
                'user': request.user,
@@ -21,7 +22,7 @@ def home(request):
 
 
 def about(request):
-    if request.user.groups.filter(name="Manager").exists():
+    if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
     context = {'is_authenticated': request.user.is_authenticated,
                'user': request.user
@@ -29,10 +30,11 @@ def about(request):
     return render(request, 'home/about.html', context)
 
 
+
 def book(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    if request.user.groups.filter(name="Manager").exists():
+    if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
 
     context = {'is_authenticated': request.user.is_authenticated,
@@ -42,7 +44,13 @@ def book(request):
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         people = request.POST.get('people')
-        reservation_datetime = request.POST.get('reservation_datetime')
+
+        date_string = request.POST.get('date-picker') + " " + request.POST.get('time-picker')
+        format_string = "%Y-%m-%d %I:%M %p"
+        reservation_datetime = datetime.strptime(date_string, format_string)
+        table_id = request.POST.get('table-picker')
+        table = ReservationTables.objects.filter(table_id=table_id)
+
         message = request.POST.get('message')
 
         TableBooking.objects.create(user=request.user,
@@ -50,14 +58,15 @@ def book(request):
                                     booking_phone=phone,
                                     people=people,
                                     booking_date=reservation_datetime,
-                                    message=message
+                                    message=message,
+                                    reservation_table=table.first()
                                     )
         return redirect('account')
     return render(request, 'home/book.html', context)
 
 
 def menu(request):
-    if request.user.groups.filter(name="Manager").exists():
+    if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
     context = {
         'is_authenticated': request.user.is_authenticated,
@@ -80,7 +89,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            if user.groups.filter(name="Manager").exists():
+            if user.groups.filter(name="manager").exists():
                 return redirect('manager-account')
             return redirect('home')
         else:
@@ -131,7 +140,7 @@ def logout_view(request):
 
 
 def cart(request):
-    if request.user.groups.filter(name="Manager").exists():
+    if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
 
     context = {'is_authenticated': request.user.is_authenticated,
@@ -143,7 +152,7 @@ def cart(request):
 def account(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    if request.user.groups.filter(name="Manager").exists():
+    if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
 
     context = {'is_authenticated': request.user.is_authenticated,
@@ -158,7 +167,7 @@ def place_order(request):
     if not request.user.is_authenticated:
         return HttpResponse(json.dumps({'redirect': "/login"}), content_type="application/json")
 
-    if request.user.groups.filter(name="Manager").exists():
+    if request.user.groups.filter(name="manager").exists():
         return HttpResponse(json.dumps({'redirect': "/manager-account"}), content_type="application/json")
 
     if request.method != 'POST':
@@ -185,7 +194,7 @@ def place_order(request):
 def manager_account(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    if not request.user.groups.filter(name="Manager").exists():
+    if not request.user.groups.filter(name="manager").exists():
         return redirect('home')
 
     context = {'is_authenticated': request.user.is_authenticated,
@@ -203,7 +212,7 @@ def manager_save_order(request):
     if not request.user.is_authenticated:
         return HttpResponse(json.dumps({'response': False}), content_type="application/json")
 
-    if not request.user.groups.filter(name="Manager").exists():
+    if not request.user.groups.filter(name="manager").exists():
         return HttpResponse(json.dumps({'response': False}), content_type="application/json")
 
     if request.method != 'POST':
@@ -223,7 +232,7 @@ def manager_save_booking(request):
     if not request.user.is_authenticated:
         return HttpResponse(json.dumps({'response': False}), content_type="application/json")
 
-    if not request.user.groups.filter(name="Manager").exists():
+    if not request.user.groups.filter(name="manager").exists():
         return HttpResponse(json.dumps({'response': False}), content_type="application/json")
 
     if request.method != 'POST':
@@ -237,3 +246,17 @@ def manager_save_booking(request):
     table_booking.save()
     return HttpResponse(json.dumps({'response': True}), content_type="application/json")
 
+
+def check_table_availability(request):
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'response': False}), content_type="application/json")
+
+    if request.user.groups.filter(name="manager").exists():
+        return HttpResponse(json.dumps({'response': False}), content_type="application/json")
+
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'response': False}), content_type="application/json")
+
+    data = json.loads(request.body)
+    tables = get_available_tables(data.get('date_value'),data.get('time_value'))
+    return HttpResponse(json.dumps({'response': True, 'tables':tables}), content_type="application/json")
