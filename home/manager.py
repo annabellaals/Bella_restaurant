@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import Group
 
 
 class UserManager(BaseUserManager):
@@ -28,6 +29,7 @@ class UserManager(BaseUserManager):
         user.is_staff = True
         user.is_active = True
         user.is_superuser = True
-        user.groups.add('admin')
+        admin_group, _ = Group.objects.get_or_create(name='admin')
+        user.groups.add(admin_group)
         user.save(using=self._db)
         return user

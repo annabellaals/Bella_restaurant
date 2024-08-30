@@ -3,37 +3,87 @@
 
 {% block content %}
 
-<body class="sub_page">
-  <div class="hero_area">
-    <div class="bg-box">
-      <img src="{% static 'images/hero-bg.jpg' %}" alt="">
-    </div>
-    {% include 'home/partials/_header.html' %}
-  </div>
+    <style>
+        .table-row {
+            margin: 0 20px;
+        }
 
-  <!-- book section -->
-  <section class="book_section layout_padding">
-    <div class="container">
-      <div class="heading_container">
-        <h2>
-          Book A Table
-        </h2>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form_container">
-                {% include 'home/partials/_booking.html' %}
-          </div>
+        .table-icon {
+            width: 50px;
+            height: 50px;
+            margin: 7px 5px;
+            background-image: url('table-icon.png'); /* Replace with your table icon URL */
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 2px solid #ddd; /* Default border color */
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .table-icon.selected {
+            border-color: #007bff; /* Highlight color for selected tables */
+        }
+    </style>
+
+    <body class="sub_page">
+    <div class="hero_area">
+        <div class="bg-box">
+            <img src="{% static 'images/hero-bg.jpg' %}" alt="">
         </div>
-{#        <div class="col-md-6">#}
-{#          <div class="map_container ">#}
-{#            <div id="googleMap"></div>#}
-{#          </div>#}
-{#        </div>#}
-      </div>
+        {% include 'home/partials/_header.html' %}
     </div>
-  </section>
-  <!-- end book section -->
 
+    <!-- book section -->
+    <section class="book_section layout_padding">
+        <div class="container">
+            <div class="heading_container">
+                <h2>
+                    Book A Table
+                </h2>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form_container">
+                        {% include 'home/partials/_booking.html' %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3 id="table-title"></h3>
+                    <div class="table-row" id="table_row"></div>
+                    <div class="btn_box" id="table-booking-submit">
+                    </div>
+                </div>
+
+                <script>
+                    let selectedTable = null;
+                    function toggleTableSelection(element) {
+                        if (selectedTable !== element) {
+                            if (selectedTable != null)
+                                selectedTable.classList.remove('selected');
+                            element.classList.add('selected');
+                            selectedTable = element;
+                            console.log(element.id)
+                            document.getElementById('table-picker').value = element.id;
+                        } else {
+                            selectedTable = null;
+                        }
+
+                        if (selectedTable) {
+                            const e = document.getElementById('table-booking-submit')
+                            e.innerHTML = `
+                             <button type="submit" id="table-booking-submit-btn">
+                            submit
+                        </button>
+                            `
+                            e.addEventListener('click', function () {
+                                document.getElementById('table-booking-form').submit();
+                            });
+                        }
+                    }
+                </script>
+            </div>
+        </div>
+    </section>
     {% include 'home/partials/_footer.html' %}
 {% endblock %}

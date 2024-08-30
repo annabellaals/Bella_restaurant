@@ -1,6 +1,6 @@
 {% load static %}
 
-<form action="" method="post">
+<form action="" method="post" id="table-booking-form">
     {% csrf_token %}
     <div>
         <input type="text" name="name" id="name" class="form-control" placeholder="Your Name"
@@ -16,33 +16,81 @@
     </div>
 
     <div>
-        {#                <select class="form-control nice-select wide">#}
-        {#                  <option value="" disabled selected>#}
-        {#                    How many persons?#}
-        {#                  </option>#}
-        {#                  <option value="">#}
-        {#                    2#}
-        {#                  </option>#}
-        {#                  <option value="">#}
-        {#                    3#}
-        {#                  </option>#}
-        {#                  <option value="">#}
-        {#                    4#}
-        {#                  </option>#}
-        {#                  <option value="">#}
-        {#                    5#}
-        {#                  </option>#}
-        {#                </select>#}
+
+    </div>
+    <div>
+        <input type="number" name="people" id="people" class="form-control" value="1" placeholder="How many persons?" required/>
     </div>
 
     <div>
-        <input type="number" name="people" id="people" class="form-control" placeholder="How many persons?"/>
+        <input type="date" id="date-picker" name="date-picker" class="form-control" required>
     </div>
 
     <div>
-        <input type="text" name="reservation_datetime" id="reservation_datetime" class="form-control"
-               placeholder="Reservation Date and time">
+        <select id="time-picker" name="time-picker" class="form-control" required></select>
     </div>
+
+    <div>
+        <input type="text" id="table-picker" name="table-picker" style="display: none" required>
+    </div>
+    <script>
+        const datePicker = document.getElementById('date-picker');
+        const timePicker = document.getElementById('time-picker');
+
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+
+        // Set minimum date to today
+        datePicker.setAttribute('min', today);
+        datePicker.value = today;
+
+        const formatTime = (hour, minute) => {
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const formattedHour = hour % 12 || 12; // Convert 24-hour to 12-hour format
+            const formattedMinute = minute < 10 ? '0' + minute : minute;
+            return `${formattedHour}:${formattedMinute} ${ampm}`;
+        };
+
+        const addTimeOption = (hour, minute) => {
+            const timePicker = document.getElementById('time-picker');
+            const option = document.createElement('option');
+            option.value = formatTime(hour, minute);
+            option.textContent = formatTime(hour, minute);
+            timePicker.appendChild(option);
+        };
+
+        const generateTimeOptions = (startHour, startMinute, endHour = 23, endMinute = 30) => {
+            const timePicker = document.getElementById('time-picker');
+            timePicker.innerHTML = ''; // Clear existing options
+            for (let hour = startHour; hour <= endHour; hour++) {
+                const startMins = (hour === startHour) ? startMinute : 0;
+                const endMins = (hour === endHour) ? endMinute : 30;
+                for (let minute = startMins; minute <= endMins; minute += 30) {
+                    addTimeOption(hour, minute);
+                }
+            }
+        };
+
+        const updateTimeOptions = () => {
+            const selectedDate = new Date(datePicker.value);
+            if (selectedDate.toISOString().split('T')[0] === today) {
+                // Current day: show time options based on current time
+                const currentHour = now.getHours();
+                const currentMinute = now.getMinutes();
+                const roundedMinutes = Math.round(currentMinute / 30) * 30;
+                generateTimeOptions(currentHour, roundedMinutes);
+            } else {
+                // Future date: show all time options
+                generateTimeOptions(0, 0);
+            }
+        };
+
+        // Initialize time options
+        updateTimeOptions();
+
+        // Update time options when date changes
+        datePicker.addEventListener('change', updateTimeOptions);
+    </script>
 
     <script>
         var dtt = document.getElementById('reservation_datetime')
@@ -52,6 +100,52 @@
         }
     </script>
 
+    <script>
+        function checkAvailability() {
+            const datePicker = document.getElementById('date-picker');
+            const timePicker = document.getElementById('time-picker');
+            var dateValue = datePicker.value;
+            var timeValue = timePicker.value;
+
+            $.ajax({
+                headers: {"X-CSRFToken": getCookie("csrftoken")},
+                type: "POST",
+                url: '{% url 'check-table-availability' %}',
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    date_value: dateValue,
+                    time_value: timeValue
+                }),
+                success: function (data) {
+                    if (data && data.response) {
+                        const container = document.getElementById('table_row');
+                        container.innerHTML = '';
+                        if (data.tables.length){
+                            document.getElementById('table-title').innerText = "Select Table";
+                        }
+                        data.tables.forEach(item => {
+                            let itemDiv = ""
+                            if (item.is_available)
+                                itemDiv = `<div style="display: flex;align-items: center;gap: 10px;">
+                                <div class="table-icon" onclick="toggleTableSelection(this)" id="${item.table_id}"></div>
+                                 ${item.table_id}
+                            </div>`
+                            else
+                                itemDiv = `<div style="display: flex;align-items: center;gap: 10px;">
+                                <div class="table-icon"></div>
+                                 ${item.table_id} (booked)
+                            </div>`
+                            container.innerHTML += itemDiv;
+                        });
+                    }
+                },
+                failure: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+    </script>
     <textarea
             class="form-control"
             name="message"
@@ -59,9 +153,10 @@
             rows="3"
             placeholder="Message"
     ></textarea>
-    <div class="btn_box">
-        <button type="submit">
-            Check Availability
-        </button>
-    </div>
 </form>
+
+<div class="btn_box">
+    <button onclick="checkAvailability()">
+        Check Availability
+    </button>
+</div>
