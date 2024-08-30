@@ -30,7 +30,7 @@
                         {% for order in orders %}
                         <tr>
                             <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ order.id }}</td>
+                            <td>{{ order.id|slice:":-5" }}</td>
                             <td>
                                 {% for item in order.orderfood_set.all %}
                                     <div>- {{ item.food.name }} - ${{ item.food.price }}.00</div>
@@ -58,8 +58,10 @@
                             <th scope="col">Phone</th>
                             <th scope="col"># of peoples</th>
                             <th scope="col">Booking date time</th>
+                            <th scope="col">Table</th>
                             <th scope="col">Message</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -67,13 +69,17 @@
                         {% for booking in bookings %}
                         <tr>
                             <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ booking.id }}</td>
+                            <td>{{ booking.id|slice:":-5" }}</td>
                             <td>{{ booking.booking_name}} </td>
                             <td>{{ booking.booking_phone }}</td>
                             <td>{{ booking.people }}</td>
                             <td>{{ booking.booking_date }}</td>
+                            <td>{{ booking.reservation_table.table_id }}</td>
                             <td>{{ booking.message }}</td>
                             <td>{{ booking.status }}</td>
+                        <td>
+                            <button>Cancel</button>
+                            </td>
                         </tr>
                         {% endfor %}
                         </tbody>
