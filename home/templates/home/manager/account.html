@@ -115,8 +115,6 @@
             var inputElement = document.getElementById(`order-comments-${id}`);
             var selectedValue = selectElement.value;
             var commentValue = inputElement.value;
-
-            console.log(commentValue)
             $.ajax({
                 headers: {"X-CSRFToken": getCookie("csrftoken")},
                 type: "POST",

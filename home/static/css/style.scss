@@ -362,6 +362,12 @@ a:focus {
 
   }
 
+  .table-image-cls {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 
   .carousel-indicators {
     position: unset;

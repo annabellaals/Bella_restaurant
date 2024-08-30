@@ -12,17 +12,23 @@
             width: 50px;
             height: 50px;
             margin: 7px 5px;
-            background-image: url('table-icon.png'); /* Replace with your table icon URL */
             background-size: cover;
             background-position: center;
             cursor: pointer;
-            border: 2px solid #ddd; /* Default border color */
+            border: 2px solid transparent; /* Default border color */
             border-radius: 4px;
             transition: border-color 0.3s;
+
+        }
+
+        .table-icon-hover{
+             &:hover {
+                    border-color: #007bff;
+                  }
         }
 
         .table-icon.selected {
-            border-color: #007bff; /* Highlight color for selected tables */
+            border-color: #f2635a;
         }
     </style>
 
@@ -72,9 +78,12 @@
                         if (selectedTable) {
                             const e = document.getElementById('table-booking-submit')
                             e.innerHTML = `
-                             <button type="submit" id="table-booking-submit-btn">
+<div class="book_section"><div class="form_container">
+ <button type="submit" id="table-booking-submit-btn">
                             submit
                         </button>
+</div></div>
+
                             `
                             e.addEventListener('click', function () {
                                 document.getElementById('table-booking-form').submit();

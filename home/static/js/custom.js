@@ -30,9 +30,9 @@ $(window).on('load', function () {
 });
 
 // nice select
-$(document).ready(function () {
-    $('select').niceSelect();
-});
+// $(document).ready(function () {
+//     $('select').niceSelect();
+// });
 
 /** google_map js **/
 function myMap() {
@@ -179,3 +179,106 @@ function place_order(is_authenticated) {
 }
 
 window.onload = getItems;
+
+const datePicker = document.getElementById('date-picker');
+const timePicker = document.getElementById('time-picker');
+
+const now = new Date();
+const today = now.toISOString().split('T')[0];
+
+// Set minimum date to today
+datePicker.setAttribute('min', today);
+datePicker.value = today;
+
+const formatTime = (hour, minute) => {
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const formattedHour = hour % 12 || 12; // Convert 24-hour to 12-hour format
+    const formattedMinute = minute < 10 ? '0' + minute : minute;
+    return `${formattedHour}:${formattedMinute} ${ampm}`;
+};
+
+const addTimeOption = (hour, minute) => {
+    const timePicker = document.getElementById('time-picker');
+    const option = `<option value="${formatTime(hour, minute)}">${formatTime(hour, minute)}</option>`
+    timePicker.innerHTML += option;
+};
+
+const generateTimeOptions = (startHour, startMinute, endHour = 23, endMinute = 30) => {
+    const timePicker = document.getElementById('time-picker');
+    timePicker.innerHTML = ''; // Clear existing options
+    for (let hour = startHour; hour <= endHour; hour++) {
+        const startMins = (hour === startHour) ? startMinute : 0;
+        const endMins = (hour === endHour) ? endMinute : 30;
+        for (let minute = startMins; minute <= endMins; minute += 30) {
+            addTimeOption(hour, minute);
+        }
+    }
+};
+
+const updateTimeOptions = () => {
+    const selectedDate = new Date(datePicker.value);
+    if (selectedDate.toISOString().split('T')[0] === today) {
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const roundedMinutes = Math.round(currentMinute / 30) * 30;
+        generateTimeOptions(currentHour, roundedMinutes);
+    } else {
+        generateTimeOptions(0, 0);
+    }
+};
+
+// Initialize time options
+updateTimeOptions();
+
+// Update time options when date changes
+datePicker.addEventListener('change', updateTimeOptions);
+
+function checkAvailability() {
+    const datePicker = document.getElementById('date-picker');
+    const timePicker = document.getElementById('time-picker');
+    var dateValue = datePicker.value;
+    var timeValue = timePicker.value;
+
+    $.ajax({
+        headers: {"X-CSRFToken": getCookie("csrftoken")},
+        type: "POST",
+        url: 'ajax/check-table-availability/',
+        dataType: 'json',
+        contentType: "application/json",
+        data: JSON.stringify({
+            date_value: dateValue,
+            time_value: timeValue
+        }),
+        success: function (data) {
+            if (data && data.response) {
+                const container = document.getElementById('table_row');
+                container.innerHTML = '';
+                if (data.tables.length) {
+                    document.getElementById('table-title').innerText = "Select Table";
+                }
+                data.tables.forEach(item => {
+                    let itemDiv = ""
+                    if (item.is_available)
+                        itemDiv = `<div style="display: flex;align-items: center;gap: 10px;">
+                                <div class="table-icon table-icon-hover" style="padding:3px" onclick="toggleTableSelection(this)" id="${item.table_id}">
+<img src="/static/images/table.png" alt="" style="width: 100%;height: 100%;object-fit: cover;object-position: center;"/>
+</div>
+                                 ${item.table_id}
+                            </div>`
+                    else
+                        itemDiv = `<div style="display: flex;align-items: center;gap: 10px;">
+                                <div class="table-icon"  style="padding:3px">
+<img src="/static/images/table.png" alt="" style="width: 100%;height: 100%;object-fit: cover;object-position: center;"/>
+
+</div>
+                                 ${item.table_id} (booked)
+                            </div>`
+                    container.innerHTML += itemDiv;
+                });
+            }
+        },
+        failure: function (data) {
+            console.log(data)
+        }
+    });
+}
