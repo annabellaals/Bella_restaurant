@@ -221,9 +221,9 @@ const updateTimeOptions = () => {
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
         const roundedMinutes = Math.round(currentMinute / 30) * 30;
-        generateTimeOptions(currentHour, roundedMinutes);
+        generateTimeOptions(currentHour >= 14 ? currentHour: 14, currentHour >= 14 ? roundedMinutes: 0 );
     } else {
-        generateTimeOptions(0, 0);
+        generateTimeOptions(14, 0);
     }
 };
 
