@@ -13,7 +13,7 @@ def home(request):
     if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
     context = {'is_authenticated': request.user.is_authenticated,
-               'user': request.user,
+               'user': request.user if request.user.is_authenticated else None,
                'foods': Food.objects.filter(available=True),
                'food_types': FoodType.objects.all(),
                 'manager': False
@@ -38,7 +38,7 @@ def book(request):
         return redirect('manager-account')
 
     context = {'is_authenticated': request.user.is_authenticated,
-               'user': request.user
+               'user': request.user if request.user.is_authenticated else None
                }
     if request.method == 'POST':
         name = request.POST.get('name')
