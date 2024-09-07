@@ -78,13 +78,61 @@ User roles are key to the site’s functionality, distinguishing between Admins,
 
 ---
 
-### Database Schema
+## Database Schema
 
 Due to the requirements of the project, a relational database was chosen to best suit the needs of Bella's Restaurant. The database schema has been designed to ensure efficient data management and retrieval.
 
 After consulting with a mentor, it was recommended to normalize the database schema. This involves reducing redundancy by ensuring that data is not duplicated across tables. As a result, the `User` table was updated to include full name, phone number, and address details, and these fields were removed from the `UserProfile` table. Similarly, duplicated user information in the `Order` table was consolidated into the `User` table. The `Product` table no longer includes the `sizes` column as it was deemed unnecessary.
 
-Some fields were adjusted in the schema diagrams due to limitations of the diagramming tool. Notable field adjustments are documented [here](https://drawsql.app/teams/student-622/diagrams/copy-of-seaside-sewing). Snowflake icons are used to indicate foreign keys in the schema diagrams.
+Some fields were adjusted in the schema diagrams due to limitations of the diagramming tool.
+
+
+## Skeleton Plane
+
+### **Wireframes**
+
+Wireframes for the Bella's Restaurant project were created using [wireframe](https://wireframe.cc/).
+
+
+* **Base Template** - This template contains the header and footer, which are used throughout the website. The base template is used as a foundation, with specific page content injected into the main section using Django's template language.
+
+
+  ![Base Template Wireframe](documentation/wireframes/base.png) ![Base Template Wireframe](documentation/wireframes/base-responsive.png)
+
+
+* **Home Page** - The homepage features a header banner, a menu, and a footer. It provides an overview of the restaurant and links to other pages.
+
+  ![Home Page Wireframe](documentation/wireframes/home.png)
+
+
+* **Menu Page** - The menu page displays a list of all dishes available at Bella's Restaurant, including descriptions and prices.
+
+  ![Menu Page Wireframe](documentation/wireframes/menu.png) ![Menu Page Wireframe](documentation/wireframes/menu-responsive.png)
+
+
+* **About Page** - The about page provides information about Bella's Restaurant, including its history, mission, and values.
+
+  ![About Page Wireframe](documentation/wireframes/about.png)  ![About Page Wireframe](documentation/wireframes/about-responsive.png)
+
+
+* **Book Page** - The booking page allows customers to reserve a table at Bella's Restaurant. Users can select the date, time, and number of people for their reservation.
+
+  ![Book Page Wireframe](documentation/wireframes/book.png)  ![Book Page Wireframe](documentation/wireframes/book-responsive.png)
+
+
+* **Cart Page** - The cart page shows the food items added by the user and provides an option to proceed to checkout. Users can review their order and make changes if necessary.
+
+  ![Cart Page Wireframe](documentation/wireframes/cart.png)  ![Cart Page Wireframe](documentation/wireframes/cart-responsive.png)
+
+
+* **Login Page** - The login page allows users to access their account by entering their username and password. If users do not have an account, they can register from this page.
+
+  ![Login Page Wireframe](documentation/wireframes/login.png)  ![Login Page Wireframe](documentation/wireframes/login-responsive.png)
+
+
+* **Register Page** - The register page enables users to create a new account by providing their username, password, and email address. Users can also register using their social media accounts.
+
+  ![Register Page Wireframe](documentation/wireframes/register.png)  ![Register Page Wireframe](documentation/wireframes/register-responsive.png)
 
 # Bella's Restaurant Website
 
@@ -97,7 +145,7 @@ Each page of Bella's Restaurant website includes:
   ![Bella's Restaurant Favicon](documentation/readme/favicon.png)
 
 * **Navbar** - The navbar is divided into two sections:
-  - The first section includes a search bar, account icon, and reservation icon.
+  - The first section includes account icon, and reservation icon.
   - The second section lists the site's menu categories. The navbar is fully responsive, utilizing a hamburger menu toggle on smaller screens. The hamburger icon rotates 90 degrees on click to provide visual feedback.
 
   The category links in the navbar have a hover effect that moves the category name up, providing selection feedback. The account icon includes a dropdown menu that varies based on user status (logged in, superuser).
@@ -107,9 +155,9 @@ Each page of Bella's Restaurant website includes:
 
 * **Footer** - The footer is segmented into four sections:
   - Information about the site, including terms and conditions and policies.
-  - Contact information with a link to the contact form and social media links.
-  - Details about the payment processor used for reservations, including accepted payment methods.
-  - A disclaimer indicating that the site is an educational project and that no orders will be processed.
+  - Contact information with a link to the contact and social media links.
+  - Details about reservations.
+  - A disclaimer
 
   The footer is fully responsive, stacking sections on smaller screens.
 
@@ -162,10 +210,16 @@ Users can either adjust their cart or complete their order. A checkout payment o
 
 ![Checkout Page Screenshot](documentation/readme/checkout.png)
 
-### **Checkout Payment Overlay**
 
-Upon clicking "Complete Order," a payment overlay is displayed with a spinner indicating payment processing. If there are issues with the delivery information, users are returned to the checkout page with an error message.
+### **Admin HomePage Overlay**
 
+Admin can see Users, food, foodType and orders. You can visit the admin page using the Link: [Admin Page](https://bella-restaurant-730f308dde58.herokuapp.com/admin/login/?next=/admin/)
+
+![Admin Page Screenshot](documentation/readme/admin1.png)
+
+![Admin Page Screenshot](documentation/readme/admin2.png)
+
+![Admin Page Screenshot](documentation/readme/admin3.png)
 
 ### Future Implementations
 
@@ -225,7 +279,7 @@ sqlite3 for development.
 
 [psycopg2](https://pypi.org/project/psycopg2/) - a postgres database adapter which allow us to connect with a postgres database
 
-[django-environ](https://pypi.org/project/django-environ/) - allows us to configure your Django application with environment variables.
+[django-environ](https://pypi.org/project/django-environ/) - allows us to configure Django application with environment variables.
 
 [sqlparse](https://pypi.org/project/sqlparse/) - allows us to support for parsing, splitting and formatting SQL statements.
 
@@ -270,13 +324,13 @@ The project is deployed using Heroku. To deploy the project:
 The project uses SQLite in development but requires an external PostgreSQL database for production. To set up the external database:
 
 1. Go to the [PostgreSQL dashboard](https://www.heroku.com/postgresql) and create a new database instance.
-2. Name your database instance (e.g., bellar), choose the free tier if available, and select the closest region. Follow the prompts to create the instance.
-3. Once created, navigate to the dashboard, select your new database, and copy the connection URL.
+2. Name database instance (e.g., bellar), choose the free tier if available, and select the closest region. Follow the prompts to create the instance.
+3. Once created, navigate to the dashboard, select new database, and copy the connection URL.
 
 #### Heroku App Setup
 
   1. From the [Heroku dashboard](https://dashboard.heroku.com/), click the new button in the top right corner and select create new app.
-  2. Give your app a name (this must be unique), select the region that is closest to you and then click the create app button bottom left.
+  2. Give app a name (this must be unique), select the region that is closest to you and then click the create app button bottom left.
   3. Open the settings tab and create a new config var of `DATABASE_URL` and paste the database URL you copied from elephantSQL into the value (the value should not have quotation marks around it).
 
 #### **Preparation for deployment in GitPod**
@@ -287,7 +341,7 @@ The project uses SQLite in development but requires an external PostgreSQL datab
    pip3 install dj_database_url==0.5.0 psycopg2
    ```
 
-2. Update your requirements.txt file with the packages just installed:
+2. Update requirements.txt file with the packages just installed:
 
     ```bash
     pip3 freeze > requirements.txt
@@ -378,7 +432,7 @@ The project uses SQLite in development but requires an external PostgreSQL datab
 
 #### **Generate a SECRET KEY & Updating Debug**
 
-1. Django automatically sets a secret key when you create your project, however we shouldn't use this default key in our deployed version, as it leaves our site vulnerable. We can use a random key generator to create a new SECRET_KEY which we can then add to our Heroku config vars which will then keep the key protected.
+1. Django automatically sets a secret key when you create project, however we shouldn't use this default key in our deployed version, as it leaves our site vulnerable. We can use a random key generator to create a new SECRET_KEY which we can then add to our Heroku config vars which will then keep the key protected.
 2. [Django Secret Key Generator](https://miniwebtool.com/django-secret-key-generator/) is an example of a site we could use to create our secret key. Create a new key and copy the value.
 3. In Heroku settings create a new config var with a key of `SECRET_KEY`. The value will be the secret key we just created. Click add.
 4. In settings.py we can now update the `SECRET_KEY` variable, asking it to get the secret key from the environment, or use an empty string in development:
@@ -408,7 +462,7 @@ Welcome to Bella's Restaurant, an online platform where you can order delicious 
 To fork the repository:
 
 1. Log in (or sign up) to GitHub.
-2. Go to the repository for this project, [bella's-restaurant](https://github.com/your-username/bellas-restaurant).
+2. Go to the repository for this project, [bella's-restaurant](https://github.com/annabellaals/Bella_restaurant).
 3. Click on the fork button in the top right of the page.
 
 ### **How to Clone**
@@ -416,9 +470,9 @@ To fork the repository:
 To clone the repository:
 
 1. Log in (or sign up) to GitHub.
-2. Go to the repository for this project, [bella's-restaurant](https://github.com/your-username/bellas-restaurant).
+2. Go to the repository for this project, [bella's-restaurant](https://github.com/annabellaals/Bella_restaurant).
 3. Click the Code button, select whether you would like to clone with HTTPS, SSH, or the GitHub CLI, and copy the link provided.
-4. Open the terminal in your chosen IDE and change the current working directory to the location you would like to use for the cloned repository.
+4. Open the terminal in chosen IDE and change the current working directory to the location you would like to use for the cloned repository.
 5. Type the following command into the terminal: `git clone` followed by the link you copied in step 3.
 6. Set up a virtual environment (this step is not required if you are using an integrated development environment like GitPod which sets it up for you).
 7. Install the packages from the `requirements.txt` file by running the following command in the terminal:
@@ -429,9 +483,9 @@ To clone the repository:
 
 ### **Database Setup**
 
-1. Ensure PostgreSQL is installed and running on your local machine.
+1. Ensure PostgreSQL is installed and running on local machine.
 2. Create a PostgreSQL database for the project.
-3. Update the `DATABASES` setting in the `settings.py` file with your database credentials.
+3. Update the `DATABASES` setting in the `settings.py` file with database credentials.
 4. Run migrations to set up the database schema:
 
     ```bash
