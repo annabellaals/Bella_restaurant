@@ -78,5 +78,3 @@ If you use a CI/CD tool (e.g., GitHub Actions, Travis CI, Jenkins), ensure your 
 
 ## Conclusion
 Running tests is crucial for maintaining the quality and reliability of the Bella's Restaurant project. Regular testing helps catch bugs early and ensures that changes do not introduce new issues.
-
-For further assistance or questions about testing, please contact the development team.
