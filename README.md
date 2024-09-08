@@ -525,8 +525,11 @@ Content for the site was created by me, with specific descriptions and menu item
 
 I would like to acknowledge the following people who have contributed to the completion of this project:
 
-* My family for their patience and support during the development of this project.
-* The online community for their support and the wealth of resources available for Django and web development.
-* The Django community for their continuous improvements and support.
+* My support system at home for being patience and the hands-on constant advice
+* Credits to Code Institute, help from mentor Greame, and slack community
+* Credits to Harvard´s Online courses
+* Credits to W3schools
+* Credits to Udemy
+* Credits to code Institute students, helped me on-hand
 
 ---
