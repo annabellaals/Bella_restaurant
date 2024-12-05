@@ -181,14 +181,16 @@ function place_order(is_authenticated) {
 window.onload = getItems;
 
 const datePicker = document.getElementById('date-picker');
-const timePicker = document.getElementById('time-picker');
 
 const now = new Date();
 const today = now.toISOString().split('T')[0];
 
 // Set minimum date to today
 datePicker.setAttribute('min', today);
-datePicker.value = today;
+// If the date picker has no value, set it to today's date
+if (!datePicker.value) {
+  datePicker.value = today;
+}
 
 const formatTime = (hour, minute) => {
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -233,7 +235,7 @@ updateTimeOptions();
 // Update time options when date changes
 datePicker.addEventListener('change', updateTimeOptions);
 
-function checkAvailability() {
+function checkAvailability(booking_id) {
     const datePicker = document.getElementById('date-picker');
     const timePicker = document.getElementById('time-picker');
     var dateValue = datePicker.value;
@@ -242,7 +244,7 @@ function checkAvailability() {
     $.ajax({
         headers: {"X-CSRFToken": getCookie("csrftoken")},
         type: "POST",
-        url: 'ajax/check-table-availability/',
+        url: '/book/ajax/check-table-availability/',
         dataType: 'json',
         contentType: "application/json",
         data: JSON.stringify({

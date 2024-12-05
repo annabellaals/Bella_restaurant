@@ -80,7 +80,12 @@
                                     <td>{{ booking.message }}</td>
                                     <td>{{ booking.status }}</td>
                                     <td>
-                                        <button>Cancel</button>
+                                        {% if booking.status != 'CANCELED' %}
+                                        <div>
+                                            <button onclick="window.location.href='{% url 'update_user_booking' booking.id %}'">Update</button>
+                                            <button onclick="cancelUserBooking(`{{ booking.id }}`)">Cancel</button>
+                                        </div>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -92,5 +97,28 @@
             </div>
         </div>
     </section>
+
+    <script>
+    function cancelUserBooking(id) {
+            $.ajax({
+                headers: {"X-CSRFToken": getCookie("csrftoken")},
+                type: "POST",
+                url: '{% url 'user-cancel-booking' %}',
+                dataType: 'json',
+                contentType: "application/json",
+                data: JSON.stringify({
+                    booking_id: id,
+                }),
+                success: function (data) {
+                    window.location.reload()
+                },
+                failure: function (data) {
+                    console.log(data)
+                }
+            });
+        }
+
+    </script>
+
     {% include 'home/partials/_footer.html' %}
 {% endblock %}

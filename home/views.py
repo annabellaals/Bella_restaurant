@@ -31,36 +31,51 @@ def about(request):
 
 
 
-def book(request):
+def book(request, booking_id=None):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect('/login?next=/book')
     if request.user.groups.filter(name="manager").exists():
         return redirect('manager-account')
 
     context = {'is_authenticated': request.user.is_authenticated,
-               'user': request.user if request.user.is_authenticated else None
-               }
+               'user': request.user if request.user.is_authenticated else None,
+               'booking_data': None
+    }
+
+    if booking_id:
+        booking_data = TableBooking.objects.filter(user=request.user, id=booking_id)
+        if booking_data.exists():
+            context['booking_data'] = booking_data.first()
+
     if request.method == 'POST':
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        people = request.POST.get('people')
+        booking = None
+        if request.POST.get('id', None):
+            queryset = TableBooking.objects.filter(user=request.user, id=request.POST.get('id')).first()
+            if queryset:
+                booking = queryset
+            else:
+                booking = TableBooking(user=request.user)
+
+
+        booking.booking_name = request.POST.get('name')
+        booking.booking_phone = request.POST.get('phone')
+        booking.people = request.POST.get('people')
 
         date_string = request.POST.get('date-picker') + " " + request.POST.get('time-picker')
         format_string = "%Y-%m-%d %I:%M %p"
         reservation_datetime = datetime.strptime(date_string, format_string)
+
+        booking.booking_date = reservation_datetime
         table_id = request.POST.get('table-picker')
         table = ReservationTables.objects.filter(table_id=table_id)
 
-        message = request.POST.get('message')
+        booking.reservation_table = table.first()
 
-        TableBooking.objects.create(user=request.user,
-                                    booking_name=name,
-                                    booking_phone=phone,
-                                    people=people,
-                                    booking_date=reservation_datetime,
-                                    message=message,
-                                    reservation_table=table.first()
-                                    )
+        booking.message = request.POST.get('message')
+
+        booking.save()
+
+        messages.success(request, 'Booking was successfully saved.')
         return redirect('account')
     return render(request, 'home/book.html', context)
 
@@ -91,7 +106,9 @@ def login_view(request):
             login(request, user)
             if user.groups.filter(name="manager").exists():
                 return redirect('manager-account')
-            return redirect('home')
+
+            next_url = request.GET.get('next', '/')  # Default to home if no 'next' is provided
+            return redirect(next_url)
         else:
             messages.error(request, 'Invalid credentials')
 
@@ -225,6 +242,7 @@ def manager_save_order(request):
     order.status = data.get('selected_value')
     order.comments = data.get('comment_value')
     order.save()
+    messages.success(request, 'Order is successfully updated.')
     return HttpResponse(json.dumps({'response': True}), content_type="application/json")
 
 
@@ -244,6 +262,7 @@ def manager_save_booking(request):
         return HttpResponse(json.dumps({'response': False}), content_type="application/json")
     table_booking.status = data.get('selected_value')
     table_booking.save()
+    messages.success(request, 'Booking is successfully updated.')
     return HttpResponse(json.dumps({'response': True}), content_type="application/json")
 
 
@@ -260,3 +279,23 @@ def check_table_availability(request):
     data = json.loads(request.body)
     tables = get_available_tables(data.get('date_value'),data.get('time_value'))
     return HttpResponse(json.dumps({'response': True, 'tables':tables}), content_type="application/json")
+
+
+def user_cancel_booking(request):
+    if not request.user.is_authenticated:
+        return HttpResponse(json.dumps({'response': False}), content_type="application/json")
+
+    if request.user.groups.filter(name="manager").exists():
+        return HttpResponse(json.dumps({'response': False}), content_type="application/json")
+
+    if request.method != 'POST':
+        return HttpResponse(json.dumps({'response': False}), content_type="application/json")
+
+    data = json.loads(request.body)
+    booking = TableBooking.objects.filter(user=request.user, id=data.get('booking_id')).first()
+    if not booking:
+        return HttpResponse(json.dumps({'response': False}), content_type="application/json")
+    booking.status = TableBooking.BookStatus.CANCELED
+    booking.save()
+    messages.success(request, 'Booking is successfully canceled.')
+    return HttpResponse(json.dumps({'response': True}), content_type="application/json")

@@ -31,11 +31,6 @@
                                 <input type="password" name="password" id="password" class="form-control"
                                        placeholder="Password" required/>
                             </div>
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <li class="{{ message.tags }}">{{ message }}</li>
-                                {% endfor %}
-                    {% endif %}
                             <div class="btn_box">
                                 <button type="submit">
                                     Login
@@ -50,12 +45,6 @@
 
                     </div>
                 </div>
-
-                {#        <div class="col-md-6">#}
-                {#          <div class="map_container ">#}
-                {#            <div id="googleMap"></div>#}
-                {#          </div>#}
-                {#        </div>#}
             </div>
 
         </div>

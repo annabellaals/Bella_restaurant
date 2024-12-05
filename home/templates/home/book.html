@@ -21,10 +21,10 @@
 
         }
 
-        .table-icon-hover{
-             &:hover {
-                    border-color: #007bff;
-                  }
+        .table-icon-hover {
+            &:hover {
+                border-color: #007bff;
+            }
         }
 
         .table-icon.selected {
@@ -45,7 +45,11 @@
         <div class="container">
             <div class="heading_container">
                 <h2>
-                    Book A Table
+                    {% if booking_data %}
+                        Update your Booking
+                    {% else %}
+                        Book A Table
+                    {% endif %}
                 </h2>
             </div>
             <div class="row">
@@ -63,6 +67,7 @@
 
                 <script>
                     let selectedTable = null;
+
                     function toggleTableSelection(element) {
                         if (selectedTable !== element) {
                             if (selectedTable != null)
@@ -78,12 +83,11 @@
                         if (selectedTable) {
                             const e = document.getElementById('table-booking-submit')
                             e.innerHTML = `
-<div class="book_section"><div class="form_container">
- <button type="submit" id="table-booking-submit-btn">
-                            submit
-                        </button>
-</div></div>
-
+                                <div class="book_section">
+                                    <div class="form_container">
+                                        <button type="submit" id="table-booking-submit-btn">submit</button>
+                                    </div>
+                                </div>
                             `
                             e.addEventListener('click', function () {
                                 document.getElementById('table-booking-form').submit();

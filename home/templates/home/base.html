@@ -34,9 +34,63 @@
   <!-- responsive style -->
   <link href="{% static 'css/responsive.css'%}" rel="stylesheet" />
 
+
+    <style>
+        /* Add any custom styles if necessary */
+        .modal-content {
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 
 {% block content %} {% endblock %}
+
+<!-- Modal Popup (Hidden by default) -->
+    <div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupModalLabel">Notification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="popupMessageContent">
+                    <!-- Dynamic message content will go here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display messages as popups using JavaScript -->
+    {% if messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                {% for message in messages %}
+                    // Set the modal content based on message type
+                    let messageType = "{{ message.tags }}";
+                    let messageContent = "{{ message }}";
+                    let modalContent = document.getElementById("popupMessageContent");
+                    modalContent.innerHTML = messageContent;
+
+                    // Show the modal
+                    $('#popupModal').modal('show');
+
+                    // You can also change the modal's class based on message type (for styling)
+                    if (messageType == 'success') {
+                        document.querySelector('.modal-content').classList.add('alert-success');
+                    } else if (messageType == 'error') {
+                        document.querySelector('.modal-content').classList.add('alert-danger');
+                    } else if (messageType == 'warning') {
+                        document.querySelector('.modal-content').classList.add('alert-warning');
+                    }
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
 
   <!-- jQery -->
   <script src="{% static 'js/jquery-3.4.1.min.js'%}"></script>

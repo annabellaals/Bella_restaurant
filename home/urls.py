@@ -17,4 +17,6 @@ urlpatterns = [
     path('manager_save_booking/', views.manager_save_booking, name="manager-save-booking"),
     path('cart/ajax/place_order/', views.place_order, name='place_order'),
     path('book/ajax/check-table-availability/', views.check_table_availability, name='check-table-availability'),
+    path('user-cancel-booking/', views.user_cancel_booking, name="user-cancel-booking"),
+    path('user/booking/<slug:booking_id>/update/', views.book, name="update_user_booking"),
 ]

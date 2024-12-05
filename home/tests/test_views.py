@@ -7,7 +7,6 @@ from home.models import User
 
 class HomepageTestCase(TestCase):
     def setUp(self):
-        # You can use this method to set up any necessary preconditions for your tests
         pass
 
     def test_homepage_status_code(self):

@@ -2,38 +2,57 @@
 
 <form action="" method="post" id="table-booking-form">
     {% csrf_token %}
+    {% if booking_data %}
+     <input type="text" name="id" id="id" class="form-control" value="{{ booking_data.id }}" style="display: none"/>
+        {% endif %}
     <div>
         {% if user %}
-        <input type="text" name="name" id="name" class="form-control" placeholder="Your Name"
-               value="{{ user.first_name }}"/>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Your Name"
+                   value="{{ user.first_name }}"/>
         {% else %}
-        <input type="text" name="name" id="name" class="form-control" placeholder="Your Name"/>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Your Name"/>
 
-    {% endif %}
+        {% endif %}
     </div>
     <div>
         {% if user %}
-        <input type="email" name="email" id="email" class="form-control" placeholder="Your Email"
-               value="{{ user.email }}" disabled/>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Your Email"
+                   value="{{ user.email }}" disabled/>
         {% else %}
-        <input type="email" name="email" id="email" class="form-control" placeholder="Your Email"/>
-          {% endif %}
+            <input type="email" name="email" id="email" class="form-control" placeholder="Your Email"/>
+        {% endif %}
     </div>
     <div>
-        <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone Number"
-               value="{{ user.phone }}"/>
-    </div>
-
-    <div>
-
-    </div>
-    <div>
-        <input type="number" name="people" id="people" class="form-control" value="1" placeholder="How many persons?"
-               required/>
+        {% if booking_data %}
+            <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone Number"
+                   value="{{ booking_data.booking_phone }}" pattern="[\+0-9]*"/>
+        {% else %}
+            <input type="text" name="phone" id="phone" class="form-control" placeholder="Phone Number"
+                   value="{{ user.phone }}" pattern="[\+0-9]*"/>
+        {% endif %}
     </div>
 
     <div>
-        <input type="date" id="date-picker" name="date-picker" class="form-control" required>
+
+    </div>
+    <div>
+        {% if booking_data %}
+            <input type="number" name="people" id="people" class="form-control" value="{{ booking_data.people }}"
+                   placeholder="How many persons?" min="1" required pattern="^[1-9]\d*$"/>
+        {% else %}
+            <input type="number" name="people" id="people" class="form-control" value="1"
+                   placeholder="How many persons?"
+                   min="1" required pattern="^[1-9]\d*$"/>
+
+        {% endif %}
+    </div>
+    <div>
+        {% if booking_data %}
+            <input type="date" id="date-picker" name="date-picker" class="form-control"
+                   value={{ booking_data.booking_date|date:"Y-m-d" }} required>
+        {% else %}
+            <input type="date" id="date-picker" name="date-picker" class="form-control" required>
+        {% endif %}
     </div>
 
     <div>
@@ -52,9 +71,37 @@
             placeholder="Message"
     ></textarea>
 </form>
-
+<div id="error-message" style="color: red; display: none;"></div>
 <div class="btn_box">
-    <button onclick="checkAvailability()">
+    <button id="submit-btn">
         Check Availability
     </button>
 </div>
+
+
+<script>
+    const phoneInput = document.getElementById('phone');
+    const peopleInput = document.getElementById('people');
+    const errorMessage = document.getElementById('error-message');
+    const form = document.getElementById('submit-btn');
+
+    form.addEventListener('click', function (event) {
+        const phonePattern = /^\+?[0-9]*$/;
+        let message = ""
+        let error = false
+        if (!phonePattern.test(phoneInput.value)) {
+            event.preventDefault();
+            message += "- Please enter a valid phone number\n"
+        }
+        if (!(!isNaN(peopleInput.value) && Number(peopleInput.value) >= 0)) {
+            event.preventDefault();
+            message += "- Please enter valid Number of people\n"
+        }
+        if (message !== "") {
+            errorMessage.innerText = message
+            errorMessage.style.display = 'block'; // Show error message
+            return
+        }
+        checkAvailability(`{{ booking_data }}`);
+    });
+</script>
