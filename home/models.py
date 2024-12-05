@@ -24,11 +24,6 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
-    # def save(self, *args, **kwargs):
-    #     # if not kwargs.get('is_password_encoded', False):
-    #     self.set_password(self.password)
-    #     super().save(*args, **kwargs)
-
 
 class FoodType(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
