@@ -2,6 +2,86 @@
 
 This document provides instructions for running test cases for the Bella's Restaurant Django project. Testing ensures that the application functions as expected and helps identify any issues.
 
+### **Testing Framework**
+The website uses the Django testing framework along with some JavaScript testing libraries to ensure that all features and functionalities are working as expected. Below is a breakdown of the testing strategies:
+
+### **Unit Testing**
+Unit tests are written to test individual components of the application, ensuring that each function behaves as expected. The following areas have been thoroughly tested:
+
+1. **Form Validation**:
+   - Ensures that forms prevent the entry of negative values where not allowed (e.g., negative quantities or reservation numbers).
+   - Tests include verifying that fields like `number of people` in a reservation are correctly validated.
+
+2. **Model Tests**:
+   - The database models are tested to verify that the relationships between models (e.g., User, Orders, Reservations) function correctly.
+   - Tests verify CRUD operations (Create, Read, Update, Delete) for all entities such as users, orders, and reservations.
+
+3. **View Tests**:
+   - Ensures that views are returning the correct HTTP responses, including redirections, status codes, and rendering of templates.
+   - Test views for both logged-in users and non-logged-in users, ensuring the proper functionality based on user roles (Admin, Manager, Customer).
+
+4. **API Tests (if applicable)**:
+   - For any REST API endpoints (e.g., for retrieving menu items, placing orders), the endpoints are tested to ensure correct HTTP methods (GET, POST, PUT, DELETE) are used.
+   - Tests also ensure proper data handling and response format (JSON or others).
+
+5. **CRUD Operation Tests**:
+   - Tests cover CRUD operations on items such as food products, orders, table reservations, and user profiles.
+   - Ensure that notifications are triggered correctly when updates or deletions occur.
+
+6. **Notification System**:
+   - Tests to verify that CRUD notifications are shown to the users when changes are made to their reservations, orders, or personal details.
+
+### **Integration Testing**
+Integration tests verify that the components of the website work together as expected. Specific scenarios tested include:
+
+1. **Customer Flow**:
+   - Test the full user journey from browsing the menu to placing an order and making a reservation.
+   - Ensures that user inputs (e.g., selecting a dish, confirming reservation details) trigger the correct actions and update the backend correctly.
+
+2. **Admin Flow**:
+   - Ensures that admin functionalities (adding food, managing reservations, generating reports) are fully integrated and tested across multiple views.
+
+3. **Error Handling**:
+   - Verifies that error messages are shown correctly when users input incorrect data or try to access unauthorized pages.
+
+### **End-to-End (E2E) Testing**
+End-to-End tests simulate user interactions with the website, ensuring that all parts of the system work together smoothly. This includes:
+
+1. **User Interaction**:
+   - Simulates user interactions with the UI (e.g., filling out forms, clicking buttons, navigating between pages).
+   - Verifies that expected results occur after each user interaction (e.g., successful reservation, order placement, or profile update).
+
+2. **Cross-Browser Testing**:
+   - Tests to ensure the site is responsive and functional across different browsers (Chrome, Firefox, Safari, Edge).
+   - Ensures consistent user experience and layout across all supported browsers.
+
+3. **Mobile Responsiveness**:
+   - Simulates user actions on mobile devices to ensure that all functionalities are accessible and usable on different screen sizes.
+   
+4. **Performance Testing**:
+   - Tests the site's speed and response times, particularly for critical features like placing orders and making reservations.
+   - Identifies potential performance bottlenecks or areas for optimization.
+
+### **Manual Testing**
+Manual testing is performed in addition to automated testing, especially for complex user flows and features such as:
+
+1. **Form Submission and Validation**:
+   - Manually test form validation logic, ensuring that users cannot submit invalid data (e.g., negative reservation numbers).
+   - Verifies error messages are shown when users try to submit invalid forms.
+
+2. **User Role Permissions**:
+   - Verify that role-based permissions are enforced, such that only Admins can perform administrative actions and Managers can handle orders.
+
+
+### **Test Coverage**
+Test coverage tools are used to ensure that all critical code paths are tested. Coverage is measured across:
+
+- **Backend models and views**
+- **Frontend form validation and interactions**
+- **API endpoints**
+
+---
+
 ## Prerequisites
 
 Before running tests, ensure you have the following:
