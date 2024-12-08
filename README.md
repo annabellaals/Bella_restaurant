@@ -58,12 +58,12 @@ User roles are key to the site’s functionality, distinguishing between Admins,
 | User Story ID | As a/an | I want to be able to ... | So that I can... |
 | :--- | :--- | :--- | :---|
 | **VIEWING & NAVIGATION** |
-| 1 | Customer | Easily browse the menu | View available food options |
+| 1 | Customer | Browse the menu easily | View available food options |
 | 2 | Customer | View detailed descriptions of dishes | Make informed choices about what to order |
-| 3 | Customer | Easily navigate to the order and reservation sections | Quickly place orders or make reservations |
+| 3 | Customer | Navigate to the order and reservation sections easily | Quickly place orders or make reservations |
 | **REGISTRATION & USER ACCOUNTS** |
 | 4 | Customer | Register for an account | Create a personalized experience and track my orders |
-| 5 | Customer | Log in and out | Securely manage my account information |
+| 5 | Customer | Log in and out of my account | Securely manage my account information |
 | 6 | Customer | Reset my password | Recover access to my account if I forget my password |
 | **ORDERING & RESERVATIONS** |
 | 7 | Customer | Place an order online | Enjoy a seamless ordering experience |
@@ -75,6 +75,15 @@ User roles are key to the site’s functionality, distinguishing between Admins,
 | 12 | Admin | Edit or delete food items | Maintain the accuracy of the menu |
 | 13 | Admin | Add and manage restaurant staff | Ensure proper staffing and management |
 | 14 | Admin | Generate reports on orders and reservations | Analyze restaurant performance and trends |
+| **BOOKING & RESERVATION MANAGEMENT** |
+| 15 | Customer | Update or cancel my table reservation | Adjust my plans if necessary |
+| 16 | Customer | Receive notifications when updates are made | Be informed about any changes to my reservation or order |
+| **USER INTERFACE & EXPERIENCE** |
+| 17 | Customer | Easily navigate the website on mobile | Have a smooth experience on smaller devices |
+| 18 | Admin | Get notified when changes are made | Track updates to food, orders, and reservations efficiently |
+| **FORM & DATA VALIDATION** |
+| 19 | Customer | Receive validation feedback for my forms | Ensure that my inputs are correct and error-free |
+| 20 | Admin | Prevent negative values in forms | Ensure all data entries are logical and correct |
 
 ---
 
@@ -163,6 +172,26 @@ Each page of Bella's Restaurant website includes:
 
   ![Site Footer Large](documentation/readme/large-footer.png)
   ![Site Footer Small](documentation/readme/small-footer.png)
+
+
+---
+
+## New Features Added
+
+### **1. Debug Mode**
+- The application now has a **Debug Mode** that can be toggled for development and troubleshooting. By default, it is set to `False` for production environments, ensuring sensitive information is not exposed to users in error messages.
+
+### **2. Form Validation**
+- **Negative Values Prevention**: To ensure accurate and valid data entry, form validation has been implemented to prevent users from entering negative values in forms where they shouldn't. This applies to inputs such as the number of people in a reservation, quantities in orders, and more.
+
+### **3. Update and Cancel Table Reservations**
+- Users can now **update** or **cancel** their table reservations directly from their reservation dashboard. This feature enhances user convenience and allows changes to be made before the reservation time.
+
+### **4. CRUD Notifications**
+- A new notification system has been added to inform users whenever they **update** or **delete** any data. This applies to actions such as updating their profile, modifying orders, or canceling reservations. A notification will appear to confirm the action has been successfully completed.
+
+---
+
 
 ### **Site Header and Footer Images**
 
